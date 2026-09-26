@@ -1,6 +1,7 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 export class HttpError extends Error { constructor(status, message) { super(message); this.status = status; } }
+export const GLASS_TYPES = Object.freeze({ windshield: 'Лобове', side: 'Бічне', rear: 'Заднє', roof: 'Панорамний дах / люк', other: 'Інше', unsure: 'Потрібна консультація' });
 export function ready() {
   return process.env.LEADS_ENABLED === 'true' && ['SUPABASE_URL', 'SUPABASE_SECRET_KEY', 'RATE_LIMIT_SALT', 'TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID', 'CRON_SECRET', 'ALLOWED_ORIGINS'].every(k => !!process.env[k]?.trim());
 }
@@ -31,7 +32,11 @@ export function normalize(body) {
   if (!/^\+[1-9]\d{7,14}$/.test(phone)) throw new HttpError(400, 'Вкажіть телефон у міжнародному форматі, наприклад +380…');
   const lead = { formType, phone, name: text('name'), carBrand: text('carBrand'), carModel: text('carModel'), year: text('year', 4), vin: text('vin', 17).toUpperCase(), comment: text('comment', 1000) };
   if (formType === 'glass_selection' && (!lead.carBrand || !lead.carModel)) throw new HttpError(400, 'Вкажіть марку та модель авто.');
-  if (formType === 'callback' && !lead.name) throw new HttpError(400, 'Вкажіть ім’я.');
+  if (!lead.name) throw new HttpError(400, 'Вкажіть ім’я.');
+  if (formType === 'glass_selection') {
+    lead.glassType = text('glassType');
+    if (!Object.hasOwn(GLASS_TYPES, lead.glassType)) throw new HttpError(400, 'Оберіть тип скла.');
+  }
   if (lead.year && (!/^\d{4}$/.test(lead.year) || +lead.year < 1900 || +lead.year > new Date().getFullYear() + 2)) throw new HttpError(400, 'Перевірте рік випуску.');
   if (lead.vin && !/^[A-HJ-NPR-Z0-9]{17}$/.test(lead.vin)) throw new HttpError(400, 'VIN повинен містити 17 символів без I, O, Q.');
   lead.attribution = {};

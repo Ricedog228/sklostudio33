@@ -25,7 +25,7 @@
       <a href="#autosklo">Автоскло</a>
       <a href="#remont">Ремонт</a>
       <a href="#zamina">Заміна</a>
-      <a href="#studio">Автостудія</a>
+      <a href="#results">Наші результати</a>
       <a href="#process">Як працюємо</a>
       <a href="#prices">Ціни</a>
       <a href="#contacts">Контакти</a>
@@ -146,6 +146,10 @@
       </div>
       <form data-lead-form="glass_selection" action="/api/lead" method="post" class="glass">
         <div class="f2">
+          <div><label for="glass_selection-name">Ім’я</label><input type="text" placeholder="Ваше ім’я" id="glass_selection-name" name="name" maxlength="100" required autocomplete="name"></div>
+          <div><label for="glass_selection-phone">Телефон</label><input type="tel" placeholder="+380" id="glass_selection-phone" name="phone" maxlength="100" required autocomplete="tel" inputmode="tel"></div>
+        </div>
+        <div class="f2">
           <div><label for="glass_selection-carBrand">Марка</label><input type="text" placeholder="Напр. Toyota" id="glass_selection-carBrand" name="carBrand" maxlength="100" required></div>
           <div><label for="glass_selection-carModel">Модель</label><input type="text" placeholder="Напр. Camry" id="glass_selection-carModel" name="carModel" maxlength="100" required></div>
         </div>
@@ -153,8 +157,16 @@
           <div><label for="glass_selection-year">Рік випуску</label><input type="number" placeholder="2018" id="glass_selection-year" name="year" maxlength="100" min="1900" max="2028"></div>
           <div><label for="glass_selection-vin">VIN (опційно)</label><input type="text" placeholder="VIN-код" id="glass_selection-vin" name="vin" maxlength="100" pattern="[A-HJ-NPR-Za-hj-npr-z0-9]{17}" title="VIN: 17 символів без I, O, Q"></div>
         </div>
-        <div><label for="glass_selection-comment">Тип скла / побажання (опційно)</label><input type="text" placeholder="Датчик дощу, обігрів..." id="glass_selection-comment" name="comment" maxlength="1000"></div>
-        <div><label for="glass_selection-phone">Телефон</label><input type="tel" placeholder="+380" id="glass_selection-phone" name="phone" maxlength="100" required autocomplete="tel" inputmode="tel"></div>
+        <div><label for="glass_selection-glassType">Тип скла</label><select id="glass_selection-glassType" name="glassType" required>
+          <option value="" selected disabled>Оберіть тип скла</option>
+          <option value="windshield">Лобове</option>
+          <option value="side">Бічне</option>
+          <option value="rear">Заднє</option>
+          <option value="roof">Панорамний дах / люк</option>
+          <option value="other">Інше</option>
+          <option value="unsure">Потрібна консультація</option>
+        </select></div>
+        <div><label for="glass_selection-comment">Побажання / комплектація (опційно)</label><input type="text" placeholder="Датчик дощу, обігрів, сторона бічного скла…" id="glass_selection-comment" name="comment" maxlength="1000"></div>
         <div class="honeypot" aria-hidden="true"><label for="glass_selection-website">Website</label><input id="glass_selection-website" name="website" tabindex="-1" autocomplete="off"></div>
         <label class="consent"><input type="checkbox" name="consent" required> <span>Погоджуюся з обробкою даних для відповіді на запит. <a href="/privacy.html" target="_blank" rel="noopener">Політика конфіденційності</a></span></label>
         <p class="form-availability" role="status">Перевіряємо доступність форми…</p>
@@ -220,25 +232,20 @@
         <tr><td>Заміна заднього скла</td><td>за запитом</td></tr>
         <tr><td>Виїзд майстра</td><td>за запитом</td></tr>
       </table>
-      <div class="price-sub">Автостудія: полірування, хімчистка, PPF, кераміка — <a href="#studio" style="color:var(--cyan);">див. нижче ↓</a></div>
+      <div class="price-sub">Остаточну вартість уточнюємо після підбору скла та оцінки робіт.</div>
     </div>
   </section>
 
-  <section class="studio" id="studio">
+  <section class="results" id="results">
     <div class="wrap">
-      <div class="eyebrow">Більше, ніж автоскло</div>
-      <h2 class="disp">А ЩЕ — ДОГЛЯД ЗА АВТО.</h2>
-      <p class="lede">Другий напрямок студії — комплексний догляд за кузовом і салоном.</p>
-      <div class="studio-grid">
-        <div class="glass studio-card"><h4>Полірування кузова</h4><p>Відновлення блиску лакофарбового покриття.</p></div>
-        <div class="glass studio-card"><h4>Полірування фар</h4><p>Прозорість та вигляд оптики.</p></div>
-        <div class="glass studio-card"><h4>Хімчистка</h4><p>Глибоке очищення салону.</p></div>
-        <div class="glass studio-card"><h4>PPF</h4><p>Захисна плівка кузова.</p></div>
-        <div class="glass studio-card"><h4>Кераміка</h4><p>Довготривалий захист покриття.</p></div>
-        <div class="glass studio-card"><h4>Тонування</h4><p>Тонування скла салону.</p></div>
-        <div class="glass studio-card"><h4>PDR</h4><p>Видалення вм'ятин без фарбування.</p></div>
-        <div class="glass studio-card"><h4>Шумоізоляція</h4><p>Зниження рівня шуму в салоні.</p></div>
+      <div class="eyebrow">SKLO.STUDIO</div>
+      <h2 class="disp">НАШІ РЕЗУЛЬТАТИ.</h2>
+      <!-- RESULTS_START -->
+      <div class="glass results-empty">
+        <p>Готуємо добірку фотографій виконаних робіт. Незабаром покажемо її тут.</p>
+        <a class="btn btn-ghost" href="#pidbir">Обговорити ваше авто</a>
       </div>
+      <!-- RESULTS_END -->
     </div>
   </section>
 

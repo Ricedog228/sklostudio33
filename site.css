@@ -121,12 +121,18 @@ td{padding:15px 6px; border-bottom:1px solid var(--line); font-size:14.5px;}
 td:last-child{text-align:right; color:var(--cyan); font-family:Unbounded; font-size:13px; white-space:nowrap;}
 .price-sub{margin-top:36px; padding-top:8px; font-size:13px; color:var(--mute);}
 
-/* DETAILING SECTION */
-.studio{background:#060809; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
-.studio-grid{display:flex; gap:14px; overflow-x:auto; margin-top:32px; padding-bottom:6px;}
-.studio-card{min-width:190px; padding:20px; flex:0 0 auto;}
-.studio-card h4{font-size:14.5px; margin-bottom:6px;}
-.studio-card p{font-size:13px; color:var(--mute);}
+/* RESULTS */
+.results{background:#060809; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+.results-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:32px;}
+.result-card{overflow:hidden;min-width:0;}
+.result-card img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;}
+.result-card figcaption{padding:22px;}
+.result-card h3{font-size:17px;margin-bottom:8px;overflow-wrap:anywhere;}
+.result-card p,.results-empty p{font-size:14px;color:var(--mute);overflow-wrap:anywhere;}
+.results-empty{margin-top:32px;padding:32px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.results-empty .btn{flex-shrink:0;}
+@media(max-width:900px){.results-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.results-grid{grid-template-columns:1fr;}.results-empty{align-items:flex-start;flex-direction:column;padding:24px;}}
 
 /* REVIEWS */
 .rev-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:32px;}

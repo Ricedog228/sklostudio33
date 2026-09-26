@@ -5,7 +5,7 @@ import lead from './.vercel/output/functions/api/lead.func/api/lead.js';
 import retry from './.vercel/output/functions/api/retry.func/api/retry.js';
 import status from './.vercel/output/functions/api/status.func/api/status.js';
 
-const payload = { formType: 'glass_selection', phone: '067 123 45 67', carBrand: 'Toyota', carModel: 'Camry', year: '2020', consent: true, attribution: { utm_source: 'qa' } };
+const payload = { formType: 'glass_selection', name: 'Тест', glassType: 'windshield', phone: '067 123 45 67', carBrand: 'Toyota', carModel: 'Camry', year: '2020', consent: true, attribution: { utm_source: 'qa' } };
 function configure() { Object.assign(process.env, { LEADS_ENABLED: 'true', SUPABASE_URL: 'https://database.test', SUPABASE_SECRET_KEY: 'sb_secret_fake', RATE_LIMIT_SALT: 'test-salt', TELEGRAM_BOT_TOKEN: 'fake', TELEGRAM_CHAT_ID: 'test-chat', CRON_SECRET: 'fake-secret', ALLOWED_ORIGINS: 'https://site.test' }); }
 function request(body = payload) { return { method: 'POST', headers: { origin: 'https://site.test', 'content-type': 'application/json', 'idempotency-key': randomUUID() }, body, socket: { remoteAddress: '127.0.0.1' } }; }
 function response() { return { headers: {}, setHeader(k,v) { this.headers[k] = v; }, status(code) { this.code = code; return this; }, json(body) { this.body = body; } }; }
@@ -17,7 +17,7 @@ test('disabled forms do not report a successful submission', async () => {
 });
 test('rejects missing consent, bad phone, VIN and required car fields before storage', async () => {
   configure();
-  for (const change of [{consent:false},{phone:'invalid'},{vin:'short'},{carBrand:''},{year:'1800'}]) {
+  for (const change of [{consent:false},{phone:'invalid'},{vin:'short'},{carBrand:''},{year:'1800'},{name:' '},{name:undefined},{glassType:''},{glassType:undefined},{glassType:'invalid'},{glassType:'constructor'}]) {
     const res = response(); await lead(request({...payload, ...change}), res); assert.equal(res.code,400);
   }
 });
@@ -58,14 +58,19 @@ test('conflicting idempotency key returns 409', async t => {
   const res=response();await lead(request(),res);assert.equal(res.code,409);
 });
 test('successful Telegram message is marked sent', async t => {
-  configure(); const req=request(); let finished=false;
+  configure(); const req=request(); let finished=false, saved;
   t.mock.method(globalThis,'fetch',async (url,options) => {
-    if(url.endsWith('sklo_submit_lead')) return Response.json({id:req.headers['idempotency-key']});
-    if(url.endsWith('sklo_claim_notification')) return Response.json([{id:'job',lead_id:'lead',lease:'lease',payload:{...payload,attribution:{}}}]);
-    if(url.includes('api.telegram.org')) return Response.json({ok:true});
+    if(url.endsWith('sklo_submit_lead')) { saved=JSON.parse(options.body).p_payload; assert.equal(saved.name,'Тест'); assert.equal(saved.glassType,'windshield'); return Response.json({id:req.headers['idempotency-key']}); }
+    if(url.endsWith('sklo_claim_notification')) return Response.json([{id:'job',lead_id:'lead',lease:'lease',payload:saved}]);
+    if(url.includes('api.telegram.org')) { const message=JSON.parse(options.body).text; assert.match(message,/Ім’я: Тест/); assert.match(message,/Тип скла: Лобове/); return Response.json({ok:true}); }
     if(url.endsWith('sklo_finish_notification')) {finished=JSON.parse(options.body).p_sent;return Response.json(null);}
   });
   const res=response();await lead(req,res);assert.equal(res.code,201);assert.equal(finished,true);
+});
+test('callback form still accepts a name and phone without a glass type', async t => {
+  configure();
+  t.mock.method(globalThis,'fetch',async url => url.endsWith('sklo_submit_lead') ? Response.json({id:'callback'}) : Response.json([]));
+  const res=response(); await lead(request({formType:'callback',name:'Тест',phone:payload.phone,consent:true}),res); assert.equal(res.code,201);
 });
 test('retry endpoint is protected even when no secret is configured', async () => {
   configure();let res=response();await retry({method:'GET',headers:{}},res);assert.equal(res.code,401);

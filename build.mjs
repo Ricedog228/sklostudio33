@@ -3,7 +3,7 @@ import path from 'node:path';
 const root = path.resolve(import.meta.dirname);
 const functions = { lead: 30, status: 10, retry: 60 };
 const required = ['package.json', 'vercel.json', 'security-headers.json',
-  'index.html', 'privacy.html', '404.html', 'robots.txt',
+  'index.html', 'privacy.html', '404.html', 'robots.txt', 'results.json',
   'site.css', 'site.js', 'favicon.svg',
   'core.js', 'notifications.js', ...Object.keys(functions).map(name => `${name}.js`)];
 const missing = [];
@@ -25,6 +25,25 @@ const staticFiles = {
 for (const [source, target] of Object.entries(staticFiles)) {
   await mkdir(path.dirname(path.join(dist, target)), { recursive: true });
   await cp(path.join(root, source), path.join(dist, target));
+}
+// Portfolio is edited separately from HTML. Only explicitly referenced local photos are published.
+const results = JSON.parse(await readFile(path.join(root, 'results.json'), 'utf8'));
+if (!Array.isArray(results)) throw new Error('results.json must contain an array of work entries');
+const escapeHtml = value => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+const cards = [];
+for (const [i, item] of results.entries()) {
+  if (!item || typeof item.title !== 'string' || !item.title.trim() || typeof item.description !== 'string' || typeof item.image !== 'string' || !/^work-[a-z0-9-]+\.(?:jpe?g|png|webp|avif)$/.test(item.image)) {
+    throw new Error(`results.json entry ${i + 1}: specify title, description and an image named work-01.jpg (or png, webp, avif)`);
+  }
+  if (!(await stat(path.join(root, item.image))).isFile()) throw new Error(`Missing portfolio photo: ${item.image}`);
+  await cp(path.join(root, item.image), path.join(dist, 'assets', item.image));
+  cards.push(`<figure class="glass result-card"><img src="/assets/${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async"><figcaption><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p></figcaption></figure>`);
+}
+let page = await readFile(path.join(dist, 'index.html'), 'utf8');
+if (!page.includes('<!-- RESULTS_START -->') || !page.includes('<!-- RESULTS_END -->')) throw new Error('Missing portfolio markers in index.html');
+if (cards.length) {
+  page = page.replace(/<!-- RESULTS_START -->[\s\S]*?<!-- RESULTS_END -->/, () => `<div class="results-grid">${cards.join('\n')}</div>`);
+  await writeFile(path.join(dist, 'index.html'), page);
 }
 const indexable = process.env.SITE_INDEXABLE === 'true' && (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'production');
 if (indexable) {

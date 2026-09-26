@@ -6,7 +6,7 @@ import status from './.vercel/output/functions/api/status.func/api/status.js';
 import retry from './.vercel/output/functions/api/retry.func/api/retry.js';
 const root = path.resolve(import.meta.dirname, './.vercel/output/static');
 const handlers = { '/api/lead': lead, '/api/status': status, '/api/retry': retry };
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.txt': 'text/plain' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.txt': 'text/plain', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.avif': 'image/avif' };
 createServer(async (req, res) => {
   res.status = code => { res.statusCode = code; return res; };
   res.json = value => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(value)); };
