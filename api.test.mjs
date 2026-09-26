@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import lead from '../api/lead.js';
-import retry from '../api/retry.js';
-import status from '../api/status.js';
+import lead from './.vercel/output/functions/api/lead.func/api/lead.js';
+import retry from './.vercel/output/functions/api/retry.func/api/retry.js';
+import status from './.vercel/output/functions/api/status.func/api/status.js';
 
 const payload = { formType: 'glass_selection', phone: '067 123 45 67', carBrand: 'Toyota', carModel: 'Camry', year: '2020', consent: true, attribution: { utm_source: 'qa' } };
 function configure() { Object.assign(process.env, { LEADS_ENABLED: 'true', SUPABASE_URL: 'https://database.test', SUPABASE_SECRET_KEY: 'sb_secret_fake', RATE_LIMIT_SALT: 'test-salt', TELEGRAM_BOT_TOKEN: 'fake', TELEGRAM_CHAT_ID: 'test-chat', CRON_SECRET: 'fake-secret', ALLOWED_ORIGINS: 'https://site.test' }); }

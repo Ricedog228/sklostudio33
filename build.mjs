@@ -1,22 +1,31 @@
 import { cp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import path from 'node:path';
-const root = path.resolve(import.meta.dirname, '..');
+const root = path.resolve(import.meta.dirname);
 const functions = { lead: 30, status: 10, retry: 60 };
-const required = ['package.json', 'vercel.json', 'scripts/security-headers.json',
-  'public/index.html', 'public/privacy.html', 'public/404.html', 'public/robots.txt',
-  'public/assets/site.css', 'public/assets/site.js', 'public/assets/favicon.svg',
-  'lib/core.js', 'lib/notifications.js', ...Object.keys(functions).map(name => `api/${name}.js`)];
+const required = ['package.json', 'vercel.json', 'security-headers.json',
+  'index.html', 'privacy.html', '404.html', 'robots.txt',
+  'site.css', 'site.js', 'favicon.svg',
+  'core.js', 'notifications.js', ...Object.keys(functions).map(name => `${name}.js`)];
 const missing = [];
 for (const file of required) {
   try { if (!(await stat(path.join(root, file))).isFile()) missing.push(file); }
   catch { missing.push(file); }
 }
-if (missing.length) throw new Error(`Incomplete project upload. Missing: ${missing.join(', ')}. Upload all extracted files and folders next to package.json; do not upload only HTML or the ZIP.`);
+if (missing.length) throw new Error(`Incomplete project upload. Missing: ${missing.join(', ')}. Upload all extracted files next to package.json; do not upload only HTML or the ZIP.`);
 const output = path.join(root, '.vercel/output');
 const dist = path.join(output, 'static');
 await rm(output, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
-await cp(path.join(root, 'public'), dist, { recursive: true });
+const staticFiles = {
+  'index.html': 'index.html', 'privacy.html': 'privacy.html', '404.html': '404.html',
+  'robots.txt': 'robots.txt', 'site.css': 'assets/site.css',
+  'site.js': 'assets/site.js', 'favicon.svg': 'assets/favicon.svg'
+};
+// Publish only this explicit list. Never copy backend code or secrets as static files.
+for (const [source, target] of Object.entries(staticFiles)) {
+  await mkdir(path.dirname(path.join(dist, target)), { recursive: true });
+  await cp(path.join(root, source), path.join(dist, target));
+}
 const indexable = process.env.SITE_INDEXABLE === 'true' && (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'production');
 if (indexable) {
   const origin = new URL(process.env.PUBLIC_SITE_URL).origin;
@@ -33,15 +42,18 @@ if (indexable) {
 for (const [name, maxDuration] of Object.entries(functions)) {
   const directory = path.join(output, 'functions', 'api', `${name}.func`);
   await mkdir(path.join(directory, 'api'), { recursive: true });
-  await cp(path.join(root, 'api', `${name}.js`), path.join(directory, 'api', `${name}.js`));
-  await cp(path.join(root, 'lib'), path.join(directory, 'lib'), { recursive: true });
+  await cp(path.join(root, `${name}.js`), path.join(directory, 'api', `${name}.js`));
+  await mkdir(path.join(directory, 'lib'), { recursive: true });
+  for (const module of ['core.js', 'notifications.js']) {
+    await cp(path.join(root, module), path.join(directory, 'lib', module));
+  }
   await writeFile(path.join(directory, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
   await writeFile(path.join(directory, '.vc-config.json'), JSON.stringify({
     runtime: 'nodejs22.x', handler: `api/${name}.js`, launcherType: 'Nodejs',
     shouldAddHelpers: true, maxDuration
   }, null, 2));
 }
-const headers = JSON.parse(await readFile(path.join(root, 'scripts/security-headers.json'), 'utf8'));
+const headers = JSON.parse(await readFile(path.join(root, 'security-headers.json'), 'utf8'));
 await writeFile(path.join(output, 'config.json'), JSON.stringify({ version: 3, routes: [
   { src: '/(.*)', headers, continue: true },
   { src: '^/$', dest: '/index.html' },

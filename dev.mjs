@@ -1,10 +1,10 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import lead from '../api/lead.js';
-import status from '../api/status.js';
-import retry from '../api/retry.js';
-const root = path.resolve(import.meta.dirname, '../public');
+import lead from './.vercel/output/functions/api/lead.func/api/lead.js';
+import status from './.vercel/output/functions/api/status.func/api/status.js';
+import retry from './.vercel/output/functions/api/retry.func/api/retry.js';
+const root = path.resolve(import.meta.dirname, './.vercel/output/static');
 const handlers = { '/api/lead': lead, '/api/status': status, '/api/retry': retry };
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.txt': 'text/plain' };
 createServer(async (req, res) => {

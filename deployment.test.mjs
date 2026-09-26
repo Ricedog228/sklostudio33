@@ -5,14 +5,14 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-const root = path.resolve(import.meta.dirname, '..');
+const root = path.resolve(import.meta.dirname);
 
 test('fresh upload builds self-contained Vercel functions and keeps backend files private', async () => {
   const temp = await mkdtemp(path.join(tmpdir(), 'sklo-deployment-'));
   try {
-    for (const file of ['api', 'lib', 'public', 'scripts', 'package.json', 'vercel.json']) await cp(path.join(root, file), path.join(temp, file), { recursive: true });
+    for (const file of ['lead.js', 'status.js', 'retry.js', 'core.js', 'notifications.js', 'index.html', 'privacy.html', '404.html', 'robots.txt', 'site.css', 'site.js', 'favicon.svg', 'security-headers.json', 'build.mjs', 'package.json', 'vercel.json']) await cp(path.join(root, file), path.join(temp, file), { recursive: true });
     const env = { ...process.env, SITE_INDEXABLE: 'false', LEADS_ENABLED: 'false' };
-    execFileSync(process.execPath, ['scripts/build.mjs'], { cwd: temp, env });
+    execFileSync(process.execPath, ['build.mjs'], { cwd: temp, env });
     const output = path.join(temp, '.vercel/output');
     const config = JSON.parse(await readFile(path.join(output, 'config.json')));
     assert.equal(config.version, 3);
@@ -32,12 +32,12 @@ test('fresh upload builds self-contained Vercel functions and keeps backend file
       finally { if (old === undefined) delete process.env.LEADS_ENABLED; else process.env.LEADS_ENABLED = old; }
       assert.equal(res.code, name === 'status' ? 200 : name === 'lead' ? 503 : 401);
     }
-    for (const file of ['api/lead.js', 'lib/core.js', '.env.local', 'database/setup.sql', 'package.json']) {
+    for (const file of ['lead.js', 'core.js', 'api/lead.js', 'lib/core.js', '.env.local', 'setup.sql', 'package.json', 'build.mjs']) {
       await assert.rejects(readFile(path.join(output, 'static', file)), { code: 'ENOENT' });
     }
-    await rm(path.join(temp, 'api/lead.js'));
-    const failed = spawnSync(process.execPath, ['scripts/build.mjs'], { cwd: temp, env, encoding: 'utf8' });
+    await rm(path.join(temp, 'lead.js'));
+    const failed = spawnSync(process.execPath, ['build.mjs'], { cwd: temp, env, encoding: 'utf8' });
     assert.notEqual(failed.status, 0);
-    assert.match(failed.stderr, /Missing: api\/lead\.js/);
+    assert.match(failed.stderr, /Missing: lead\.js/);
   } finally { await rm(temp, { recursive: true, force: true }); }
 });
