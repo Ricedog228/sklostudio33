@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "npm run build",
+  "crons": [
+    {
+      "path": "/api/retry",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}
