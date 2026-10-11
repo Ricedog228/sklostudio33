@@ -66,6 +66,21 @@ test('fresh upload builds self-contained Vercel functions and keeps backend file
     await writeFile(path.join(temp, 'results.json'), JSON.stringify([{ ...entry, image: '../core.js' }]));
     const unsafe = spawnSync(process.execPath, ['build.mjs'], { cwd: temp, env, encoding: 'utf8' });
     assert.notEqual(unsafe.status, 0); assert.match(unsafe.stderr, /results.json entry 1/);
+    // Public SEO output belongs to Production; Preview must stay excluded.
+    await writeFile(path.join(temp, 'results.json'), '[]');
+    const publicEnv = { ...env, SITE_INDEXABLE: 'true', PUBLIC_SITE_URL: 'https://sklostudio.online', VERCEL_ENV: 'production' };
+    execFileSync(process.execPath, ['build.mjs'], { cwd: temp, env: publicEnv });
+    const publicPage = await readFile(path.join(output, 'static/index.html'), 'utf8');
+    assert.match(publicPage, /<meta name="robots" content="index, follow">/);
+    assert.match(publicPage, /<link rel="canonical" href="https:\/\/sklostudio\.online\/">/);
+    assert.match(publicPage, /<meta property="og:url" content="https:\/\/sklostudio\.online\/">/);
+    assert.equal(await readFile(path.join(output, 'static/robots.txt'), 'utf8'), 'User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: https://sklostudio.online/sitemap.xml\n');
+    assert.match(await readFile(path.join(output, 'static/sitemap.xml'), 'utf8'), /<loc>https:\/\/sklostudio\.online\/<\/loc>/);
+    assert.match(await readFile(path.join(output, 'static/privacy.html'), 'utf8'), /content="noindex,nofollow"/);
+    execFileSync(process.execPath, ['build.mjs'], { cwd: temp, env: { ...publicEnv, VERCEL_ENV: 'preview' } });
+    assert.match(await readFile(path.join(output, 'static/index.html'), 'utf8'), /content="noindex, nofollow"/);
+    assert.match(await readFile(path.join(output, 'static/robots.txt'), 'utf8'), /Disallow: \//);
+    await assert.rejects(readFile(path.join(output, 'static/sitemap.xml')), { code: 'ENOENT' });
     await rm(path.join(temp, 'lead.js'));
     const failed = spawnSync(process.execPath, ['build.mjs'], { cwd: temp, env, encoding: 'utf8' });
     assert.notEqual(failed.status, 0);
