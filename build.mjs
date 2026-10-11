@@ -4,7 +4,7 @@ const root = path.resolve(import.meta.dirname);
 const functions = { lead: 30, status: 10, retry: 60 };
 const required = ['package.json', 'vercel.json', 'security-headers.json',
   'index.html', 'privacy.html', '404.html', 'robots.txt', 'results.json',
-  'site.css', 'site.js', 'favicon.svg',
+  'site.css', 'site.js', 'favicon.svg', 'studio-hero.webp', 'studio-detail.webp', 'studio-mobile.webp',
   'core.js', 'notifications.js', ...Object.keys(functions).map(name => `${name}.js`)];
 const missing = [];
 for (const file of required) {
@@ -19,7 +19,9 @@ await mkdir(dist, { recursive: true });
 const staticFiles = {
   'index.html': 'index.html', 'privacy.html': 'privacy.html', '404.html': '404.html',
   'robots.txt': 'robots.txt', 'site.css': 'assets/site.css',
-  'site.js': 'assets/site.js', 'favicon.svg': 'assets/favicon.svg'
+  'site.js': 'assets/site.js', 'favicon.svg': 'assets/favicon.svg',
+  'studio-hero.webp': 'assets/studio-hero.webp', 'studio-detail.webp': 'assets/studio-detail.webp',
+  'studio-mobile.webp': 'assets/studio-mobile.webp'
 };
 // Publish only this explicit list. Never copy backend code or secrets as static files.
 for (const [source, target] of Object.entries(staticFiles)) {

@@ -52,26 +52,12 @@
         <p class="form-note">Скло та виїзд оплачуються окремо.</p>
         <a class="microlink" href="#prices">Переглянути всі ціни →</a>
       </div>
-      <div class="hero-art">
-        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#1a232a"/><stop offset="1" stop-color="#0a0d10"/>
-            </linearGradient>
-            <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#8fe3f0" stop-opacity="0"/>
-              <stop offset=".5" stop-color="#8fe3f0" stop-opacity=".55"/>
-              <stop offset="1" stop-color="#8fe3f0" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <rect width="400" height="500" fill="url(#g1)"/>
-          <path d="M40 220 L200 120 L360 220 L360 420 L40 420 Z" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
-          <path d="M40 220 L200 120 L360 220" fill="none" stroke="#8fe3f0" stroke-width="2" opacity=".5"/>
-          <rect x="-40" y="150" width="520" height="30" fill="url(#g2)" transform="rotate(-8 200 250)"/>
-          <rect x="-40" y="300" width="520" height="14" fill="url(#g2)" transform="rotate(-8 200 250)" opacity=".6"/>
-        </svg>
-        <div class="hero-tag">WINDSHIELD / LAMINATED GLASS — 01</div>
-      </div>
+      <figure class="hero-art hero-work">
+        <img class="hero-work-main" src="/assets/studio-hero.webp" alt="Майстер працює з лобовим склом автомобіля" width="464" height="848" fetchpriority="high" decoding="async">
+        <span class="hero-work-location">Київ · Виїзний сервіс</span>
+        <div class="hero-work-detail"><img src="/assets/studio-detail.webp" alt="Нанесення клею перед встановленням скла" width="464" height="848" loading="lazy" decoding="async"><span>Увага до деталей</span></div>
+        <figcaption><span class="hero-work-kicker">SKLO.STUDIO / У РОБОТІ</span><strong>Реальні авто.<br>Реальна робота.</strong><a href="#results">Переглянути наші роботи <span aria-hidden="true">↗</span></a></figcaption>
+      </figure>
     </div>
   </section>
 
@@ -131,10 +117,11 @@
       <h2 class="disp">НЕ КОЖНЕ ПОШКОДЖЕННЯ ПОТРЕБУЄ ЗАМІНИ.</h2>
       <p class="lede">Скол не завжди потребує заміни скла. Опишіть пошкодження у заявці — майстер оцінить можливість ремонту. Ремонт сколів — від 700 грн; остаточна вартість залежить від складності.</p>
       <div class="edu-grid">
-        <div class="glass edu-card"><div class="edu-swatch sw1"></div><h3>Скол</h3><p style="color:var(--mute);font-size:13.5px;margin-top:6px;">Точкове пошкодження зовнішнього шару скла.</p></div>
-        <div class="glass edu-card"><div class="edu-swatch sw2"></div><h3>Тріщина</h3><p style="color:var(--mute);font-size:13.5px;margin-top:6px;">Лінійне пошкодження, довжина і розташування впливають на рішення.</p></div>
-        <div class="glass edu-card"><div class="edu-swatch sw3"></div><h3>Пошкодження краю</h3><p style="color:var(--mute);font-size:13.5px;margin-top:6px;">Пошкодження ближче до краю скла потребують окремої оцінки.</p></div>
+        <div class="glass edu-card"><div class="damage-diagram"><svg viewBox="0 0 360 180" role="img" aria-label="Схематичний приклад: скол"><defs><linearGradient id="glass-chip" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#29434c"/><stop offset="1" stop-color="#101c22"/></linearGradient></defs><path d="M42 16Q180 0 318 16L342 157Q180 174 18 157Z" fill="url(#glass-chip)" stroke="#557782" stroke-width="1.5"/><path d="M104 10 38 164M194 7 127 168" stroke="#cdeff2" stroke-opacity=".08" stroke-width="18"/><path d="m181 75 8 11 17 6-9 9 2 14-18-4-14 5-4-17-10-10 17-7Z" fill="#93d7e1" fill-opacity=".23" stroke="#e1faff" stroke-width="1.5"/><circle cx="180" cy="96" r="7" fill="#0c2029" stroke="#8fe3f0"/><g fill="none" stroke="#d9faff" stroke-width="1.4" stroke-linecap="round"><path d="m178 87-10-16-4-17m24 34 15-17 5-14m-13 38 24 2 12-7m-37 16 14 23 1 13m-27-34-14 16-12 2m9-28-19-7-12 3m43 9 2 21-5 8"/></g></svg></div><h3>Скол</h3><p>Точкове пошкодження зовнішнього шару скла.</p></div>
+        <div class="glass edu-card"><div class="damage-diagram"><svg viewBox="0 0 360 180" role="img" aria-label="Схематичний приклад: тріщина"><defs><linearGradient id="glass-crack" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#29434c"/><stop offset="1" stop-color="#101c22"/></linearGradient></defs><path d="M42 16Q180 0 318 16L342 157Q180 174 18 157Z" fill="url(#glass-crack)" stroke="#557782" stroke-width="1.5"/><path d="M104 10 38 164M194 7 127 168" stroke="#cdeff2" stroke-opacity=".08" stroke-width="18"/><g fill="none" stroke="#e0fbff" stroke-linecap="round"><path d="m94 10 15 24 23 13 3 23 25 9 14 19 34 8 14 21 31 9 18 26" stroke-width="2.2"/><path d="m135 68 19-17 25-6m-7 49-25 8-11 21m73-16 14-20 18-8m-17 48-9 17-16 9" stroke-width="1.2"/></g></svg></div><h3>Тріщина</h3><p>Лінійне пошкодження, довжина і розташування впливають на рішення.</p></div>
+        <div class="glass edu-card"><div class="damage-diagram"><svg viewBox="0 0 360 180" role="img" aria-label="Схематичний приклад: пошкодження краю"><defs><linearGradient id="glass-edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#29434c"/><stop offset="1" stop-color="#101c22"/></linearGradient></defs><path d="M42 16Q180 0 318 16L342 157Q180 174 18 157Z" fill="url(#glass-edge)" stroke="#557782" stroke-width="1.5"/><path d="M104 10 38 164M194 7 127 168" stroke="#cdeff2" stroke-opacity=".08" stroke-width="18"/><path d="m25 119 46-11 16-20 26-6 19-17 32-4" fill="none" stroke="#e0fbff" stroke-width="2.1" stroke-linecap="round"/><path d="m72 108 12 21 22 5m6-50-5-22 14-11m20 14 9 18 18 5" fill="none" stroke="#d9faff" stroke-width="1.1"/><circle cx="28" cy="119" r="14" fill="#8fe3f0" fill-opacity=".12" stroke="#8fe3f0" stroke-dasharray="3 4"/><path d="M19 104 28 60" stroke="#8fe3f0" stroke-width="3" stroke-linecap="round"/></svg></div><h3>Пошкодження краю</h3><p>Пошкодження ближче до краю скла потребують окремої оцінки.</p></div>
       </div>
+      <p class="form-note damage-note">Схематичні приклади. Можливість ремонту визначає майстер після огляду.</p>
       <div class="row-cta"><a class="btn btn-ghost" href="#pidbir">Запитати про ремонт</a></div>
     </div>
   </section>
@@ -212,7 +199,7 @@
 
   <section class="mobile-service">
     <div class="wrap">
-      <div class="van glass"></div>
+      <figure class="service-photo glass"><img src="/assets/studio-mobile.webp" alt="Інструмент та робота майстра по периметру автомобільного скла" width="464" height="848" loading="lazy" decoding="async"><figcaption><span>З наших робіт</span><strong>Працюємо зі склом вашого авто</strong><a href="#results">Більше фото та відео ↗</a></figcaption></figure>
       <div>
         <div class="eyebrow">Виїзний сервіс</div>
         <h2 class="disp">АВТОСКЛО З ВИЇЗДОМ.</h2>

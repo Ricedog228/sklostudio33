@@ -10,7 +10,7 @@ const root = path.resolve(import.meta.dirname);
 test('fresh upload builds self-contained Vercel functions and keeps backend files private', async () => {
   const temp = await mkdtemp(path.join(tmpdir(), 'sklo-deployment-'));
   try {
-    for (const file of ['lead.js', 'status.js', 'retry.js', 'core.js', 'notifications.js', 'index.html', 'privacy.html', '404.html', 'robots.txt', 'site.css', 'site.js', 'favicon.svg', 'security-headers.json', 'build.mjs', 'package.json', 'vercel.json', 'results.json']) await cp(path.join(root, file), path.join(temp, file), { recursive: true });
+    for (const file of ['lead.js', 'status.js', 'retry.js', 'core.js', 'notifications.js', 'index.html', 'privacy.html', '404.html', 'robots.txt', 'site.css', 'site.js', 'favicon.svg', 'studio-hero.webp', 'studio-detail.webp', 'studio-mobile.webp', 'security-headers.json', 'build.mjs', 'package.json', 'vercel.json', 'results.json']) await cp(path.join(root, file), path.join(temp, file), { recursive: true });
     // A fresh fixture has no customer media, independent of the live portfolio.
     await writeFile(path.join(temp, 'results.json'), '[]');
     const env = { ...process.env, SITE_INDEXABLE: 'false', LEADS_ENABLED: 'false' };
