@@ -11,6 +11,8 @@ test('fresh upload builds self-contained Vercel functions and keeps backend file
   const temp = await mkdtemp(path.join(tmpdir(), 'sklo-deployment-'));
   try {
     for (const file of ['lead.js', 'status.js', 'retry.js', 'core.js', 'notifications.js', 'index.html', 'privacy.html', '404.html', 'robots.txt', 'site.css', 'site.js', 'favicon.svg', 'security-headers.json', 'build.mjs', 'package.json', 'vercel.json', 'results.json']) await cp(path.join(root, file), path.join(temp, file), { recursive: true });
+    // A fresh fixture has no customer media, independent of the live portfolio.
+    await writeFile(path.join(temp, 'results.json'), '[]');
     const env = { ...process.env, SITE_INDEXABLE: 'false', LEADS_ENABLED: 'false' };
     execFileSync(process.execPath, ['build.mjs'], { cwd: temp, env });
     const output = path.join(temp, '.vercel/output');
@@ -45,6 +47,22 @@ test('fresh upload builds self-contained Vercel functions and keeps backend file
     assert.match(portfolio, /Toyota &lt;test&gt;/); assert.match(portfolio, /Before &amp; after/);
     assert.match(portfolio, /src="\/assets\/work-01.png"/); assert.doesNotMatch(portfolio, /results-empty/);
     assert.deepEqual(await readFile(path.join(output, 'static/assets/work-01.png')), await readFile(path.join(temp, 'work-01.png')));
+    // A video is linked, never embedded/preloaded into the landing page.
+    await writeFile(path.join(temp, 'work-01.mp4'), 'video fixture');
+    await writeFile(path.join(temp, 'results.json'), JSON.stringify([{ ...entry, video: 'work-01.mp4', category: 'process', duration: 62, width: 464, height: 848 }]));
+    execFileSync(process.execPath, ['build.mjs'], { cwd: temp, env });
+    const videoPage = await readFile(path.join(output, 'static/index.html'), 'utf8');
+    assert.match(videoPage, /href="\/assets\/work-01\.mp4"/);
+    assert.match(videoPage, /data-category="process"/);
+    assert.match(videoPage, /1:02/);
+    assert.doesNotMatch(videoPage, /<video|<source|rel="preload"[^>]+mp4/);
+    assert.equal(await readFile(path.join(output, 'static/assets/work-01.mp4'), 'utf8'), 'video fixture');
+    await writeFile(path.join(temp, 'results.json'), JSON.stringify([{ ...entry, video: '../core.js' }]));
+    const unsafeVideo = spawnSync(process.execPath, ['build.mjs'], { cwd: temp, env, encoding: 'utf8' });
+    assert.notEqual(unsafeVideo.status, 0); assert.match(unsafeVideo.stderr, /local work-01.mp4/);
+    await writeFile(path.join(temp, 'results.json'), JSON.stringify([{ ...entry, video: 'work-missing.mp4' }]));
+    const missingVideo = spawnSync(process.execPath, ['build.mjs'], { cwd: temp, env, encoding: 'utf8' });
+    assert.notEqual(missingVideo.status, 0); assert.match(missingVideo.stderr, /Missing portfolio video/);
     await writeFile(path.join(temp, 'results.json'), JSON.stringify([{ ...entry, image: '../core.js' }]));
     const unsafe = spawnSync(process.execPath, ['build.mjs'], { cwd: temp, env, encoding: 'utf8' });
     assert.notEqual(unsafe.status, 0); assert.match(unsafe.stderr, /results.json entry 1/);

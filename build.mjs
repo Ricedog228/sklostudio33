@@ -26,23 +26,39 @@ for (const [source, target] of Object.entries(staticFiles)) {
   await mkdir(path.dirname(path.join(dist, target)), { recursive: true });
   await cp(path.join(root, source), path.join(dist, target));
 }
-// Portfolio is edited separately from HTML. Only explicitly referenced local photos are published.
+// Only explicitly referenced local photos and videos are published.
 const results = JSON.parse(await readFile(path.join(root, 'results.json'), 'utf8'));
 if (!Array.isArray(results)) throw new Error('results.json must contain an array of work entries');
 const escapeHtml = value => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const cards = [];
+const categories = { process: 'Процес роботи', result: 'Результат' };
 for (const [i, item] of results.entries()) {
   if (!item || typeof item.title !== 'string' || !item.title.trim() || typeof item.description !== 'string' || typeof item.image !== 'string' || !/^work-[a-z0-9-]+\.(?:jpe?g|png|webp|avif)$/.test(item.image)) {
     throw new Error(`results.json entry ${i + 1}: specify title, description and an image named work-01.jpg (or png, webp, avif)`);
   }
-  if (!(await stat(path.join(root, item.image))).isFile()) throw new Error(`Missing portfolio photo: ${item.image}`);
+  if (!await stat(path.join(root, item.image)).then(file => file.isFile()).catch(() => false)) throw new Error(`Missing portfolio photo: ${item.image}`);
+  const category = item.category ?? 'result';
+  if (!Object.hasOwn(categories, category)) throw new Error(`results.json entry ${i + 1}: category must be process or result`);
+  if (item.video !== undefined && (typeof item.video !== 'string' || !/^work-[a-z0-9-]+\.mp4$/.test(item.video))) throw new Error(`results.json entry ${i + 1}: video must be a local work-01.mp4 file`);
+  for (const field of ['width', 'height', 'duration']) {
+    if (item[field] !== undefined && (!Number.isInteger(item[field]) || item[field] < 1 || item[field] > 10000)) throw new Error(`results.json entry ${i + 1}: invalid ${field}`);
+  }
   await cp(path.join(root, item.image), path.join(dist, 'assets', item.image));
-  cards.push(`<figure class="glass result-card"><img src="/assets/${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async"><figcaption><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p></figcaption></figure>`);
+  if (item.video) {
+    if (!await stat(path.join(root, item.video)).then(file => file.isFile()).catch(() => false)) throw new Error(`Missing portfolio video: ${item.video}`);
+    await cp(path.join(root, item.video), path.join(dist, 'assets', item.video));
+  }
+  const dimensions = item.width && item.height ? ` width="${item.width}" height="${item.height}"` : '';
+  const time = item.video && item.duration ? `<span class="result-duration">${Math.floor(item.duration / 60)}:${String(item.duration % 60).padStart(2, '0')}</span>` : '';
+  const play = item.video ? '<span class="result-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7Z" fill="currentColor"/></svg><span>Дивитися відео</span></span>' : '<span class="result-play"><span>Переглянути фото</span></span>';
+  const media = `/assets/${item.video || item.image}`;
+  // No video element/source exists until the visitor opens one item.
+  cards.push(`<figure class="glass result-card" data-result-card data-category="${category}"><a class="result-media" href="${media}" data-gallery-open data-kind="${item.video ? 'video' : 'photo'}" data-poster="/assets/${item.image}" data-title="${escapeHtml(item.title)}" aria-label="${item.video ? 'Дивитися відео' : 'Переглянути фото'}: ${escapeHtml(item.title)}"><img src="/assets/${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async"${dimensions}><span class="result-index">${String(i + 1).padStart(2, '0')}</span>${play}${time}</a><figcaption><span class="result-category">${categories[category]}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p></figcaption></figure>`);
 }
 let page = await readFile(path.join(dist, 'index.html'), 'utf8');
 if (!page.includes('<!-- RESULTS_START -->') || !page.includes('<!-- RESULTS_END -->')) throw new Error('Missing portfolio markers in index.html');
 if (cards.length) {
-  page = page.replace(/<!-- RESULTS_START -->[\s\S]*?<!-- RESULTS_END -->/, () => `<div class="results-grid">${cards.join('\n')}</div>`);
+  page = page.replace(/<!-- RESULTS_START -->[\s\S]*?<!-- RESULTS_END -->/, () => `<div class="gallery-controls" data-gallery-controls hidden><div class="gallery-filters" role="group" aria-label="Категорії робіт"><button type="button" class="gallery-filter is-active" data-gallery-filter="all" aria-pressed="true">Усі роботи</button><button type="button" class="gallery-filter" data-gallery-filter="process" aria-pressed="false">Процес</button><button type="button" class="gallery-filter" data-gallery-filter="result" aria-pressed="false">Результат</button></div><span class="gallery-count" data-gallery-count role="status" aria-live="polite"></span></div><div class="results-grid" id="work-gallery">${cards.join('\n')}</div><div class="gallery-footer"><button type="button" class="btn btn-ghost" data-gallery-more aria-controls="work-gallery" hidden>Показати ще</button><a class="btn btn-primary" href="#pidbir">Обговорити ваше авто</a></div>`);
   await writeFile(path.join(dist, 'index.html'), page);
 }
 const indexable = process.env.SITE_INDEXABLE === 'true' && (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'production');

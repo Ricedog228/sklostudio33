@@ -1,1 +1,152 @@
-[]
+[
+  {
+    "title": "Лобове після встановлення",
+    "description": "Готове остеклення та деталі встановлення.",
+    "image": "work-06.webp",
+    "video": "work-06.mp4",
+    "category": "result",
+    "width": 464,
+    "height": 848,
+    "duration": 19
+  },
+  {
+    "title": "Нанесення клею",
+    "description": "Підготовка скла перед встановленням.",
+    "image": "work-13.webp",
+    "video": "work-13.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 32
+  },
+  {
+    "title": "Підготовка до заміни лобового",
+    "description": "Захист кузова та підготовка робочої зони.",
+    "image": "work-01.webp",
+    "video": "work-01.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 38
+  },
+  {
+    "title": "Скло вантажівки: результат",
+    "description": "Зовнішній вигляд кабіни після роботи зі склом.",
+    "image": "work-14.webp",
+    "video": "work-14.mp4",
+    "category": "result",
+    "width": 464,
+    "height": 848,
+    "duration": 8
+  },
+  {
+    "title": "Зняття лобового скла",
+    "description": "Майстер знімає скло за допомогою присосок.",
+    "image": "work-08.webp",
+    "video": "work-08.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 10
+  },
+  {
+    "title": "Зрізання бокового скла",
+    "description": "Робота з інструментом по периметру скла.",
+    "image": "work-15.webp",
+    "video": "work-15.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 30
+  },
+  {
+    "title": "Демонтаж пошкодженого скла",
+    "description": "Фрагмент роботи з розбитим лобовим склом.",
+    "image": "work-02.webp",
+    "video": "work-02.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 28
+  },
+  {
+    "title": "Підготовка місця встановлення",
+    "description": "Автомобіль зі знятим лобовим склом.",
+    "image": "work-05.webp",
+    "video": "work-05.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 25
+  },
+  {
+    "title": "Лобове скло вантажівки",
+    "description": "Фрагмент роботи з кабіною вантажного авто.",
+    "image": "work-12.webp",
+    "video": "work-12.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 20
+  },
+  {
+    "title": "Заміна лобового: процес",
+    "description": "Демонтаж та підготовка автомобіля.",
+    "image": "work-11.webp",
+    "video": "work-11.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 16
+  },
+  {
+    "title": "Робота зі скляною панеллю",
+    "description": "Демонтаж і робота зі скляними елементами авто.",
+    "image": "work-07.webp",
+    "video": "work-07.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 48
+  },
+  {
+    "title": "Демонтаж: деталі процесу",
+    "description": "Робота зі склом і підготовленим отвором.",
+    "image": "work-09.webp",
+    "video": "work-09.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 8
+  },
+  {
+    "title": "Лобове скло: етапи роботи",
+    "description": "Скло перед встановленням та автомобіль у роботі.",
+    "image": "work-03.webp",
+    "video": "work-03.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 12
+  },
+  {
+    "title": "Огляд пошкодження",
+    "description": "Кадри пошкодженого лобового скла зсередини авто.",
+    "image": "work-04.webp",
+    "video": "work-04.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 15
+  },
+  {
+    "title": "Розбите лобове скло",
+    "description": "Пошкодження, з яким автомобіль потрапив у роботу.",
+    "image": "work-10.webp",
+    "video": "work-10.mp4",
+    "category": "process",
+    "width": 464,
+    "height": 848,
+    "duration": 15
+  }
+]
